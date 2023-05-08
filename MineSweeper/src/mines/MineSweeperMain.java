@@ -3,6 +3,8 @@ package mines;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -10,7 +12,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -124,13 +125,15 @@ public class MineSweeperMain extends Application
 				if (!m.open(x, y)) 
 				{
 					m.setShowAll(true); 
-					displayMessage("You Lost!");
+					JOptionPane.showMessageDialog(null, "Game over! You lose!", "Game Over", JOptionPane.ERROR_MESSAGE);
+
 				}
 				//User won.
 				else if (m.isDone()) 
 				{
 					m.setShowAll(true); 
-					displayMessage("You Won!");
+					JOptionPane.showMessageDialog(null, "Congratulations! You win!", "Game Over", JOptionPane.INFORMATION_MESSAGE);
+
 				}
 			} 
 			//Right-click.
@@ -179,27 +182,24 @@ public class MineSweeperMain extends Application
 		});
 	}
 	 
-	/*Reads values from TextFields.*/
-	public void resetText() 
-	{
-		height = Integer.parseInt(controller.getheight().getText());
-		width = Integer.parseInt(controller.getWidth().getText());
-		tempMines = Integer.parseInt(controller.getMines().getText());
-		//Find the minimum number of mines between the user input mines and total buttons and of the board.
-		mines = Math.min(height * width, tempMines);
+	/* Reads values from TextFields. */
+	public void resetText() {
+	    try {
+	        String heightText = controller.getheight().getText().trim();
+	        String widthText = controller.getWidth().getText().trim();
+	        String minesText = controller.getMines().getText().trim();
+
+	        height = Math.min(Integer.parseInt(heightText), 20);
+	        width = Math.min(Integer.parseInt(widthText), 20);
+	        tempMines = Integer.parseInt(minesText);
+	        //Find the minimum number of mines between the user input mines and total buttons and of the board.
+	        mines = Math.min(height * width, tempMines);
+	    } catch (NumberFormatException e)
+	    {
+	        //Input contains non-integer characters
+	        //Display an error message to the user
+	        JOptionPane.showMessageDialog(null, "Please enter only integers.", "Input Error", JOptionPane.ERROR_MESSAGE);
+	    }
 	}
 	
-	/*Displays a message to the user. */
-	public void displayMessage(String str) 
-	{   
-		Stage msg = new Stage();
-		HBox r = new HBox();
-		Label l = new Label();
-		//Set message text.
-		l.setText(str);
-		r.getChildren().add(l);
-		Scene scene = new Scene(r);
-		msg.setScene(scene);
-		msg.show();
-	}
 }	
